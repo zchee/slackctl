@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
 	"text/tabwriter"
 
 	slack "github.com/lestrrat/go-slack"
@@ -47,7 +46,7 @@ func Channels(sortby string) error {
 
 	tw := tabwriter.NewWriter(os.Stdout, 1, 8, 1, '\t', 0)
 	for _, ch := range channels {
-		if _, err := tw.Write([]byte(fmt.Sprintf("%s\t%s\n", ch.Name, strconv.Itoa(len(ch.Members))))); err != nil {
+		if _, err := tw.Write([]byte(fmt.Sprintf("%s\t%d\n", ch.Name, len(ch.Members)))); err != nil {
 			return errors.Wrap(err, "could not write to tabwriter")
 		}
 	}
