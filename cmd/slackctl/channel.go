@@ -24,6 +24,7 @@ var (
 
 func init() {
 	RootCmd.AddCommand(channelCmd)
+
 	channelCmd.Flags().StringP("sort", "s", "", "sort header name")
 }
 
