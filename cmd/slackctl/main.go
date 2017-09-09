@@ -5,7 +5,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	cli "github.com/spf13/cobra"
@@ -19,7 +18,6 @@ var RootCmd = &cli.Command{
 
 func main() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
