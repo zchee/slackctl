@@ -8,13 +8,14 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"text/tabwriter"
 
 	slack "github.com/lestrrat/go-slack"
 )
 
-func Channels() error {
+func Channels(sortby string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -28,6 +29,19 @@ func Channels() error {
 	channels, err := client.Channels().List().ExclArchived(true).Do(ctx)
 	if err != nil {
 		return err
+	}
+
+	if sortby != "" {
+		switch sortby {
+		case "name":
+			sort.Slice(channels, func(i, j int) bool {
+				return channels[i].Name < channels[j].Name
+			})
+		case "member":
+			sort.Slice(channels, func(i, j int) bool {
+				return len(channels[j].Members) < len(channels[i].Members)
+			})
+		}
 	}
 
 	tw := tabwriter.NewWriter(os.Stdout, 1, 8, 1, '\t', 0)
