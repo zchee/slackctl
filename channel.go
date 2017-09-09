@@ -32,7 +32,7 @@ func Channels(ctx context.Context, client *slack.Client, sortby string) (string,
 				return len(channels[j].Members) < len(channels[i].Members)
 			})
 		default:
-			return "", errors.Errorf("slackctl: unknown sort header name", sortby)
+			return "", errors.Errorf("slackctl: unknown sort header name: %s", sortby)
 		}
 	}
 
