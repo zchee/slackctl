@@ -5,9 +5,9 @@
 package slackctl
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"os"
 	"sort"
 	"text/tabwriter"
 
@@ -15,10 +15,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func Channels(ctx context.Context, client *slack.Client, sortby string) error {
+func Channels(ctx context.Context, client *slack.Client, sortby string) (string, error) {
 	channels, err := client.Channels().List().ExclArchived(true).Do(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to get channel list")
+		return "", errors.Wrap(err, "failed to get channel list")
 	}
 
 	if sortby != "" {
@@ -32,19 +32,20 @@ func Channels(ctx context.Context, client *slack.Client, sortby string) error {
 				return len(channels[j].Members) < len(channels[i].Members)
 			})
 		default:
-			return errors.Errorf("slackctl: unknown sort header name", sortby)
+			return "", errors.Errorf("slackctl: unknown sort header name", sortby)
 		}
 	}
 
-	tw := tabwriter.NewWriter(os.Stdout, 1, 8, 1, '\t', 0)
+	buf := new(bytes.Buffer)
+	tw := tabwriter.NewWriter(buf, 1, 8, 1, '\t', 0)
 	for _, ch := range channels {
 		if _, err := tw.Write([]byte(fmt.Sprintf("%s\t%d\n", ch.Name, len(ch.Members)))); err != nil {
-			return errors.Wrap(err, "could not write to tabwriter")
+			return "", errors.Wrap(err, "could not write to tabwriter")
 		}
 	}
 	if err := tw.Flush(); err != nil {
-		return errors.Wrap(err, "failed to flush tabwriter")
+		return "", errors.Wrap(err, "failed to flush tabwriter")
 	}
 
-	return nil
+	return buf.String(), nil
 }
