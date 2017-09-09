@@ -13,6 +13,7 @@ import (
 	"text/tabwriter"
 
 	slack "github.com/lestrrat/go-slack"
+	"github.com/pkg/errors"
 )
 
 func Channels(sortby string) error {
@@ -22,13 +23,13 @@ func Channels(sortby string) error {
 	client := slack.New(token)
 	auth, err := client.Auth().Test().Do(ctx)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get auth information")
 	}
 	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
 
 	channels, err := client.Channels().List().ExclArchived(true).Do(ctx)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get channel list")
 	}
 
 	if sortby != "" {
@@ -46,10 +47,12 @@ func Channels(sortby string) error {
 
 	tw := tabwriter.NewWriter(os.Stdout, 1, 8, 1, '\t', 0)
 	for _, ch := range channels {
-		tw.Write([]byte(fmt.Sprintf("%s\t%s\n", ch.Name, strconv.Itoa(len(ch.Members)))))
+		if _, err := tw.Write([]byte(fmt.Sprintf("%s\t%s\n", ch.Name, strconv.Itoa(len(ch.Members))))); err != nil {
+			return errors.Wrap(err, "could not write to tabwriter")
+		}
 	}
 	if err := tw.Flush(); err != nil {
-		return err
+		return errors.Wrap(err, "failed to flush tabwriter")
 	}
 
 	return nil
