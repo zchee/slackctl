@@ -20,11 +20,11 @@ func Channels(sortby string) error {
 	defer cancel()
 
 	client := slack.New(token)
-	authresp, err := client.Auth().Test().Do(ctx)
+	auth, err := client.Auth().Test().Do(ctx)
 	if err != nil {
 		return err
 	}
-	fmt.Fprintf(os.Stderr, "Team: %s\n", authresp.Team)
+	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
 
 	channels, err := client.Channels().List().ExclArchived(true).Do(ctx)
 	if err != nil {
