@@ -15,17 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func Channels(sortby string) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	client := slack.New(token)
-	auth, err := client.Auth().Test().Do(ctx)
-	if err != nil {
-		return errors.Wrap(err, "failed to get auth information")
-	}
-	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
-
+func Channels(ctx context.Context, client *slack.Client, sortby string) error {
 	channels, err := client.Channels().List().ExclArchived(true).Do(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get channel list")
