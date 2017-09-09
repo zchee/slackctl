@@ -17,7 +17,7 @@ var (
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cli.Command{
 	Use:   "slackctl",
-	Short: "A slack management tool",
+	Short: "A slack management CLI tool",
 }
 
 func main() {
