@@ -10,6 +10,10 @@ import (
 	cli "github.com/spf13/cobra"
 )
 
+var (
+	token = os.Getenv("SLACKCTL_TOKEN")
+)
+
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cli.Command{
 	Use:   "slackctl",

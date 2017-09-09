@@ -5,6 +5,11 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"os"
+
+	slack "github.com/lestrrat/go-slack"
 	"github.com/pkg/errors"
 	cli "github.com/spf13/cobra"
 	"github.com/zchee/slackctl"
@@ -39,7 +44,17 @@ func preChannel(cmd *cli.Command, args []string) error {
 }
 
 func runChannel(cmd *cli.Command, args []string) error {
-	if err := slackctl.Channels(channelSortby); err != nil {
+	client := slack.New(token)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	auth, err := slackctl.Auth(ctx, client)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
+
+	if err := slackctl.Channels(ctx, client, channelSortby); err != nil {
 		return err
 	}
 	return nil
