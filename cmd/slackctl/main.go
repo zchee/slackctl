@@ -7,7 +7,15 @@ package main
 import (
 	"fmt"
 	"os"
+
+	cli "github.com/spf13/cobra"
 )
+
+// RootCmd represents the base command when called without any subcommands
+var RootCmd = &cli.Command{
+	Use:   "slackctl",
+	Short: "A slack management tool",
+}
 
 func main() {
 	if err := RootCmd.Execute(); err != nil {
