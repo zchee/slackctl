@@ -25,11 +25,10 @@ var (
 func init() {
 	RootCmd.AddCommand(channelCmd)
 
-	channelCmd.Flags().StringP("sort", "s", "", "sort header name")
+	channelCmd.Flags().StringVarP(&channelSortby, "sort", "s", "", "sort header name")
 }
 
 func preChannel(cmd *cli.Command, args []string) error {
-	channelSortby = cmd.Flag("sort").Value.String()
 	switch channelSortby {
 	case "", "name", "member":
 		// nothing to do
