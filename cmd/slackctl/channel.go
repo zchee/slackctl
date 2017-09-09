@@ -5,23 +5,41 @@
 package main
 
 import (
+	"github.com/pkg/errors"
 	cli "github.com/spf13/cobra"
 	"github.com/zchee/slackctl"
 )
 
 // channelCmd represents the channels command
 var channelCmd = &cli.Command{
-	Use:   "channel",
-	Short: "Show your team channels",
-	RunE:  runChannel,
+	Use:     "channel",
+	Short:   "Show your team channels",
+	PreRunE: preChannel,
+	RunE:    runChannel,
 }
+
+var (
+	channelSortby string
+)
 
 func init() {
 	RootCmd.AddCommand(channelCmd)
+	channelCmd.Flags().StringP("sort", "s", "", "sort header name")
+}
+
+func preChannel(cmd *cli.Command, args []string) error {
+	channelSortby = cmd.Flag("sort").Value.String()
+	switch channelSortby {
+	case "", "name", "member":
+		// nothing to do
+	default:
+		return errors.Errorf("slackctl: invalid sort header name: %s", channelSortby)
+	}
+	return nil
 }
 
 func runChannel(cmd *cli.Command, args []string) error {
-	if err := slackctl.Channels(); err != nil {
+	if err := slackctl.Channels(channelSortby); err != nil {
 		return err
 	}
 	return nil
