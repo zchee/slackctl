@@ -40,12 +40,13 @@ func runChannel(cmd *cli.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
 
 	channels, err := slackctl.Channels(ctx, client, channelSortby)
 	if err != nil {
 		return err
 	}
+
+	fmt.Fprintf(os.Stderr, "Team: %s\n", auth.Team)
 	fmt.Println(channels)
 
 	return nil
