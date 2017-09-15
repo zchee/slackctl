@@ -29,7 +29,7 @@
   branch = "master"
   name = "github.com/lestrrat/go-slack"
   packages = [".","objects"]
-  revision = "5eec88677e9ec2f3cb704729df27c54097814c67"
+  revision = "0cd997f34b2205a3601bc1f617bb82e21d7f8e77"
 
 [[projects]]
   branch = "master"
@@ -70,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "37ded925a34fdaee7f34208e2fc855dfe6819b4b4515e20ffed598db7169a3a7"
+  inputs-digest = "ec726665258de809c012eb73fd9c586243b808f14ade07b0037a43be452e4859"
   solver-name = "gps-cdcl"
   solver-version = 1
