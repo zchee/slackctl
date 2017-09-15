@@ -2,8 +2,11 @@ GO_SRCS = $(shell find . -type f \( -name '*.go' -and -not -iwholename '*testdat
 
 build: bin/slackctl
 
+install:
+	@go install -v -x ./cmd/slackctl
+
 bin/slackctl: bin $(GO_SRCS)
-	go build -v -x -o $@ ./cmd/slackctl
+	@go build -v -x -o $@ ./cmd/slackctl
 
 bin:
 	@mkdir ./bin
